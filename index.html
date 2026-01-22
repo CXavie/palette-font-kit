@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aesthetic Generator — Live Playground</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&family=Poppins:wght@400;500;600&family=Roboto+Slab:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-bg: #f4f4f5;
+      --color-primary: #1f2933;
+      --color-secondary: #4b5563;
+      --color-accent: #6366f1;
+
+      --font-heading: 'Playfair Display', serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      background: var(--color-bg);
+      color: var(--color-primary);
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 320px 1fr 260px;
+      min-height: 100vh;
+    }
+
+    aside {
+      padding: 2rem;
+      background: #fff;
+    }
+
+    .left {
+      box-shadow: 10px 0 30px rgba(0,0,0,0.08);
+    }
+
+    .right {
+      box-shadow: -10px 0 30px rgba(0,0,0,0.08);
+    }
+
+    h1, h2, h3 {
+      font-family: var(--font-heading);
+      margin-top: 0;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--color-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      background: var(--color-accent);
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    .palette {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .swatch {
+      flex: 1;
+      height: 44px;
+      border-radius: 10px;
+    }
+
+    .meta {
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 999px;
+      font-weight: 600;
+      margin-left: 0.25rem;
+    }
+
+    .good { background: #dcfce7; color: #166534; }
+    .warn { background: #fef9c3; color: #854d0e; }
+    .bad { background: #fee2e2; color: #7f1d1d; }
+
+    main {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      max-width: 460px;
+    }
+
+    .card p {
+      line-height: 1.6;
+    }
+
+    .cta {
+      margin-top: 1rem;
+    }
+
+    .favorite-item {
+      cursor: pointer;
+      padding: 0.75rem;
+      border-radius: 10px;
+      background: #f9fafb;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .favorite-item:hover {
+      background: #eef2ff;
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- LEFT CONTROLS -->
+    <aside class="left">
+      <h1>Aesthetic Generator</h1>
+      <p class="subtitle">Colors + font pairings</p>
+
+      <button id="generate">Generate Style</button>
+
+      <div class="palette">
+        <div class="swatch" id="primary"></div>
+        <div class="swatch" id="secondary"></div>
+        <div class="swatch" id="accent"></div>
+      </div>
+
+      <div class="meta">
+        Contrast <span id="contrast" class="badge">—</span>
+      </div>
+
+      <div class="meta">
+        <strong>Fonts</strong><br />
+        Heading: <span id="headingFont"></span><br />
+        Body: <span id="bodyFont"></span>
+      </div>
+
+      <button id="save">Save Favorite</button>
+      <button id="export">Export JSON</button>
+    </aside>
+
+    <!-- PREVIEW -->
+    <main>
+      <div class="card">
+        <h2>Preview Heading</h2>
+        <p>
+          This preview updates live using the generated color palette and
+          font pairing. It mimics a real production UI card.
+        </p>
+        <button class="cta">Primary Action</button>
+      </div>
+    </main>
+
+    <!-- FAVORITES -->
+    <aside class="right">
+      <h3>Favorites</h3>
+      <div id="favorites"></div>
+    </aside>
+  </div>
+
+  <script>
+    const generateBtn = document.getElementById('generate');
+    const saveBtn = document.getElementById('save');
+    const exportBtn = document.getElementById('export');
+    const favoritesEl = document.getElementById('favorites');
+    const contrastEl = document.getElementById('contrast');
+
+    const headingFontEl = document.getElementById('headingFont');
+    const bodyFontEl = document.getElementById('bodyFont');
+
+    const swatches = {
+      primary: document.getElementById('primary'),
+      secondary: document.getElementById('secondary'),
+      accent: document.getElementById('accent')
+    };
+
+    const fontPairs = [
+      { heading: "'Playfair Display', serif", body: "'Inter', sans-serif" },
+      { heading: "'Roboto Slab', serif", body: "'Inter', sans-serif" },
+      { heading: "'Poppins', sans-serif", body: "'Inter', sans-serif" }
+    ];
+
+    let current;
+
+    function generatePalette() {
+      const base = Math.floor(Math.random() * 360);
+      return {
+        primary: `hsl(${base}, 30%, 20%)`,
+        secondary: `hsl(${base}, 20%, 40%)`,
+        accent: `hsl(${(base + 40) % 360}, 70%, 50%)`
+      };
+    }
+
+    function generateFonts() {
+      return fontPairs[Math.floor(Math.random() * fontPairs.length)];
+    }
+
+    function hslToRgb(h, s, l) {
+      s /= 100; l /= 100;
+      const k = n => (n + h / 30) % 12;
+      const a = s * Math.min(l, 1 - l);
+      const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+      return [255 * f(0), 255 * f(8), 255 * f(4)];
+    }
+
+    function contrast(rgb1, rgb2) {
+      const lum = rgb => {
+        const a = rgb.map(v => {
+          v /= 255;
+          return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+        });
+        return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+      };
+      const L1 = lum(rgb1) + 0.05;
+      const L2 = lum(rgb2) + 0.05;
+      return L1 > L2 ? L1 / L2 : L2 / L1;
+    }
+
+    function apply(style) {
+      current = style;
+
+      Object.entries(style.palette).forEach(([key, val]) => {
+        document.documentElement.style.setProperty(`--color-${key}`, val);
+        swatches[key].style.background = val;
+      });
+
+      document.documentElement.style.setProperty('--font-heading', style.fonts.heading);
+      document.documentElement.style.setProperty('--font-body', style.fonts.body);
+
+      headingFontEl.textContent = style.fonts.heading;
+      bodyFontEl.textContent = style.fonts.body;
+
+      const rgbText = hslToRgb(...style.palette.primary.match(/\d+/g).map(Number));
+      const ratio = contrast(rgbText, [255,255,255]);
+
+      contrastEl.textContent = ratio.toFixed(2) + ':1';
+      contrastEl.className = 'badge ' + (ratio >= 4.5 ? 'good' : ratio >= 3 ? 'warn' : 'bad');
+    }
+
+    function generateStyle() {
+      apply({
+        palette: generatePalette(),
+        fonts: generateFonts()
+      });
+    }
+
+    function save() {
+      const saved = JSON.parse(localStorage.getItem('styles') || '[]');
+      saved.push(current);
+      localStorage.setItem('styles', JSON.stringify(saved));
+      renderSaved();
+    }
+
+    function renderSaved() {
+      favoritesEl.innerHTML = '';
+      const saved = JSON.parse(localStorage.getItem('styles') || '[]');
+
+      saved.forEach((style, i) => {
+        const div = document.createElement('div');
+        div.className = 'favorite-item';
+        div.innerHTML = `<strong>Style ${i + 1}</strong><br>${style.fonts.heading} + ${style.fonts.body}`;
+        div.onclick = () => apply(style);
+        favoritesEl.appendChild(div);
+      });
+    }
+
+    function exportJSON() {
+      const blob = new Blob([
+        JSON.stringify(current, null, 2)
+      ], { type: 'application/json' });
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'aesthetic-style.json';
+      a.click();
+    }
+
+    generateBtn.onclick = generateStyle;
+    saveBtn.onclick = save;
+    exportBtn.onclick = exportJSON;
+
+    renderSaved();
+  </script>
+</body>
+</html>
