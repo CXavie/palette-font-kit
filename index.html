@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aesthetic Generator — Master Theory</title>
 
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
-  
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAJ1SURBVHgB7VdLbtNAEJ2ZtR0SBySOHHio9ED6ByVp6YF7C8S9V+reS5W49At6S6VvPUCih6q9cIs8VImHSAhIHCpInDgl9vS89S6OndhOnCSWCHGklZf17uy8mX0zs4sI/vMh6N77S/6DHzpA995P8h/8YAY8T2u9/2X9e8/zMvY6vAnK8+I0HwDOf8N/Fz8f7mXvBqB77yf5D/5yBozH403m8Pj7+/vtDofX378+9uE6uW4C0BvXvfdV/oMfGfA6u8v+pWv9vXb7mAnj4YtU9e7/6O3V/16P0z6mX6lq/8E/3z+fD5+X8fA5z2XvBkDRvfeT/Ac/asC9vS/7fP0l6I0fXmR3O9v/rB+y6499X/Z7vP0R6Pe9Xfajm8G7H9/uE79698p18m4AEPYIu87zOf7LGeBvUuU/55vj6/nS968+D+Ym6Of9vYv09yH7Pee57N0AkL33p/wHP7YAV7R7Lz0G/zD67uFvY968X6O3mKofT9i3XpX/4EcNyKrvP9e6Gnz9mDdv3G+I30GfA2E+4S/oGfI917P0D2D23p/yH/yoAXNfO6mD/5f0z9FvInBvY968X3N2D4HfgZ7X/M3C58HnZTx8znPZuwFQuPf+lP/gxw3IlfUeE6Y56mX0P8M33LzOdzFmPyS88R66G3xeXtfYfM95Lns3AGTv/ST/wY8aoEHe8zP0T5O+X6Pf5ZpXpW/D1wD0FvS7XPNY+Ppg96f8Bz8ywD3fO+w9X/U56mU0xG/oY30/9DHgTdA93zvsH5fXPUmfc57L3g0A2Xt/yn/wBxlAjvM/H5I9A/8D8Hl53XN+pX/0nU/5D340AyB/mHwF9P5k/fsH8W8X76H27v8AAAAASUVORK5CYII=">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Oswald:wght@400;700&family=Merriweather:wght@400;700&family=Lora:wght@400;700&family=Source+Code+Pro:wght@400;700&family=Abril+Fatface&family=Bebas+Neue&family=Poppins:wght@400;700&family=Raleway:wght@400;700&display=swap" rel="stylesheet">
@@ -20,14 +20,20 @@
       --text-main: #1f2933;
       --card-bg: #ffffff;
       --shadow: rgba(0,0,0,0.08);
+      --border-color: rgba(0,0,0,0.05);
+      --toggle-bg: #e2e8f0;
+      --nav-bg: #111827;
     }
 
     body.dark-mode {
-      --bg-app: #0f172a;
-      --bg-side: #1e293b;
-      --text-main: #f8fafc;
-      --card-bg: #334155;
-      --shadow: rgba(0,0,0,0.3);
+      --bg-app: #000000;
+      --bg-side: #0a0a0a;
+      --text-main: #eeeeee;
+      --card-bg: #121212;
+      --shadow: rgba(0,0,0,0.6);
+      --border-color: rgba(255,255,255,0.1);
+      --toggle-bg: #334155;
+      --nav-bg: #000000;
     }
 
     * { box-sizing: border-box; transition: background 0.4s ease, color 0.3s ease, border 0.3s ease; }
@@ -40,17 +46,44 @@
       overflow-x: hidden;
     }
 
-    .shortcuts {
+    /* Cleaned Top Navigation */
+    .top-nav {
       position: sticky; top: 0; z-index: 100;
-      background: #111827; color: #fff;
-      padding: 0.5rem 1rem; font-size: 0.8rem;
-      display: flex; gap: 1.5rem; justify-content: center;
+      background: var(--nav-bg); color: #fff;
+      padding: 0.75rem 2rem;
+      display: flex; justify-content: flex-end; align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border-bottom: 1px solid var(--border-color);
     }
 
-    .app { display: grid; grid-template-columns: 320px 1fr 280px; min-height: 100vh; }
+    /* Modern Theme Switch */
+    .theme-switch-wrapper { display: flex; align-items: center; gap: 12px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; }
+    .theme-switch {
+      position: relative; display: inline-block;
+      width: 44px; height: 24px;
+    }
+    .theme-switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--toggle-bg);
+      transition: .4s; border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute; content: "";
+      height: 18px; width: 18px;
+      left: 3px; bottom: 3px;
+      background-color: white;
+      transition: .4s; border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    input:checked + .slider { background-color: #6366f1; }
+    input:checked + .slider:before { transform: translateX(20px); }
+
+    .app { display: grid; grid-template-columns: 320px 1fr 280px; min-height: calc(100vh - 48px); }
     aside { padding: 2rem; background: var(--bg-side); overflow-y: auto; }
-    .left { box-shadow: 10px 0 30px var(--shadow); border-right: 1px solid rgba(0,0,0,0.05); z-index: 5; }
-    .right { box-shadow: -10px 0 30px var(--shadow); border-left: 1px solid rgba(0,0,0,0.05); z-index: 5; }
+    .left { border-right: 1px solid var(--border-color); z-index: 5; }
+    .right { border-left: 1px solid var(--border-color); z-index: 5; }
 
     .brand-header {
         display: flex; align-items: center; justify-content: space-between;
@@ -62,20 +95,15 @@
     button {
       width: 100%; padding: 0.85rem; border-radius: 12px; border: none;
       cursor: pointer; font-weight: 600; color: #fff; margin-bottom: 1rem;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
-
-    button:active { transform: scale(0.98); }
 
     .control { font-size: 0.85rem; margin-bottom: 1.5rem; }
     label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
     
-    select, input[type="color"] {
-        width: 100%; margin-top: 0.2rem; cursor: pointer;
-    }
+    select, input[type="color"] { width: 100%; margin-top: 0.2rem; cursor: pointer; }
 
     select {
-        padding: 0.6rem; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1);
+        padding: 0.6rem; border-radius: 8px; border: 1px solid var(--border-color);
         background: var(--card-bg); color: var(--text-main); font-weight: 500;
     }
 
@@ -87,7 +115,6 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 0.65rem; font-weight: 700; color: #fff;
       text-shadow: 0 1px 2px rgba(0,0,0,0.4); text-align: center;
-      cursor: pointer; position: relative;
     }
 
     .contrast-badge {
@@ -101,21 +128,33 @@
       box-shadow: 0 25px 50px var(--shadow); max-width: 480px; text-align: center;
     }
 
+    .component-demo {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px dashed var(--border-color);
+      text-align: left;
+    }
+
+    .btn-group { display: flex; flex-direction: column; gap: 12px; margin-top: 1rem; }
+    .comp-btn {
+      width: 100%; padding: 0.7rem; border-radius: 8px;
+      font-weight: 600; cursor: pointer; text-shadow: none;
+    }
+
+    .btn-default { border: 1px solid #cbd5e1; background: #fff; color: #334155; }
+    body.dark-mode .btn-default { background: #1a1a1a; color: #fff; border-color: #333; }
+    .btn-ghost { border: 1px solid transparent; background: transparent; }
+
     .favorite-item {
       display: flex; flex-direction: column;
       padding: 0.8rem; border-radius: 12px; background: rgba(0,0,0,0.05);
       margin-bottom: 0.75rem; cursor: pointer; gap: 0.5rem;
     }
-
+    body.dark-mode .favorite-item { background: #1a1a1a; }
     .fav-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; opacity: 0.7; }
     .mini-palette { display: flex; gap: 4px; flex: 1; }
     .mini-swatch { width: 100%; height: 12px; border-radius: 3px; }
     .delete { color: #ef4444; font-size: 1.2rem; cursor: pointer; padding: 0 5px; }
-
-    .toggle-container {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(0,0,0,0.1);
-    }
 
     #mobileFavToggle {
         display: none;
@@ -127,32 +166,26 @@
 
     @media (max-width: 1024px) {
         .app { grid-template-columns: 320px 1fr; }
-        .right {
-            position: fixed; right: -280px; top: 0; bottom: 0;
-            width: 280px; transition: right 0.3s ease;
-            z-index: 150;
-        }
+        .right { position: fixed; right: -280px; top: 48px; bottom: 0; width: 280px; z-index: 150; }
         .right.open { right: 0; }
         #mobileFavToggle { display: flex; }
-    }
-
-    @media (max-width: 768px) {
-        .app { grid-template-columns: 1fr; }
-        .left { border-right: none; }
-        .shortcuts { display: none; }
     }
   </style>
 </head>
 
 <body>
 
-  <div class="shortcuts">
-    <span><strong>G</strong> Generate</span>
-    <span><strong>S</strong> Save</span>
-    <span><strong>E</strong> Export</span>
-  </div>
+  <nav class="top-nav">
+    <div class="theme-switch-wrapper">
+      <span>DARK MODE</span>
+      <label class="theme-switch">
+        <input type="checkbox" id="themeToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </nav>
 
-  <button id="mobileFavToggle" title="Toggle Favorites">★</button>
+  <button id="mobileFavToggle">★</button>
 
   <div class="app">
     <aside class="left">
@@ -184,7 +217,6 @@
             <option value="monochrome">Monochrome</option>
             <option value="complementary">Complementary</option>
             <option value="triadic">Triadic</option>
-            <option value="random">Pure Random</option>
         </select>
       </div>
 
@@ -201,20 +233,24 @@
 
       <button id="generate">Generate Style</button>
       <button id="save" style="border: 1px solid rgba(255,255,255,0.2);">Save Favorite</button>
+      <button id="downloadCSS" style="background: #475569;">Download CSS</button>
       <button id="export">Export JSON</button>
-
-      <div class="toggle-container">
-        <span>Dark Mode</span>
-        <input type="checkbox" id="themeToggle">
-      </div>
     </aside>
 
     <main>
       <div class="card" id="previewCard">
         <h2 id="previewHeader">Design System</h2>
-        <p>The interface is now streamlined. Control your saturation directly via the color picker for a more intuitive experience.</p>
-        <button id="previewBtn">Preview Action</button>
+        <p>Interface colors are calculated automatically based on your base color and harmony mode.</p>
         <div id="contrastBadge" class="contrast-badge">Contrast: --</div>
+
+        <div class="component-demo">
+            <h3 style="font-size: 0.8rem; margin-bottom: 1rem; opacity: 0.7; font-family: sans-serif; text-transform: uppercase; letter-spacing: 1.5px;">UI Components</h3>
+            <div class="btn-group">
+              <button class="comp-btn btn-primary" id="uiPrimary">Primary Action</button>
+              <button class="comp-btn btn-default" id="uiDefault">Default Outline</button>
+              <button class="comp-btn btn-ghost" id="uiGhost">Ghost Button</button>
+            </div>
+          </div>
       </div>
     </main>
 
@@ -228,6 +264,7 @@
     const generateBtn = document.getElementById('generate');
     const saveBtn = document.getElementById('save');
     const exportBtn = document.getElementById('export');
+    const downloadCSSBtn = document.getElementById('downloadCSS');
     const favoritesEl = document.getElementById('favorites');
     const baseColorInput = document.getElementById('baseColor');
     const modeSelect = document.getElementById('modeSelect');
@@ -239,7 +276,9 @@
     
     const previewCard = document.getElementById('previewCard');
     const previewHeader = document.getElementById('previewHeader');
-    const previewBtn = document.getElementById('previewBtn');
+    
+    const uiPrimary = document.getElementById('uiPrimary');
+    const uiGhost = document.getElementById('uiGhost');
 
     const swatches = {
       primary: document.getElementById('primary'),
@@ -256,9 +295,9 @@
 
     fontSelector.addEventListener('change', () => {
         const font = fontSelector.value;
-        previewCard.style.fontFamily = font;
-        previewHeader.style.fontFamily = font;
-        previewBtn.style.fontFamily = font;
+        document.querySelectorAll('#previewCard, #previewHeader, .comp-btn').forEach(el => {
+            el.style.fontFamily = font;
+        });
         if (current) current.font = font;
     });
 
@@ -326,32 +365,34 @@
       const p = style.palette;
 
       const primaryHex = hslToHex(p.primary[0], p.primary[1], p.primary[2]);
+      const secondaryHex = hslToHex(p.secondary[0], p.secondary[1], p.secondary[2]);
+      const accentHex = hslToHex(p.accent[0], p.accent[1], p.accent[2]);
+
       baseColorInput.value = primaryHex;
 
       if(style.font) {
           fontSelector.value = style.font;
-          previewCard.style.fontFamily = style.font;
-          previewHeader.style.fontFamily = style.font;
-          previewBtn.style.fontFamily = style.font;
+          document.querySelectorAll('#previewCard, #previewHeader, .comp-btn').forEach(el => {
+            el.style.fontFamily = style.font;
+          });
       }
 
-      const h1 = primaryHex;
-      const h2 = hslToHex(p.secondary[0], p.secondary[1], p.secondary[2]);
-      const h3 = hslToHex(p.accent[0], p.accent[1], p.accent[2]);
+      swatches.primary.style.background = primaryHex; swatches.primary.textContent = primaryHex;
+      swatches.secondary.style.background = secondaryHex; swatches.secondary.textContent = secondaryHex;
+      swatches.accent.style.background = accentHex; swatches.accent.textContent = accentHex;
 
-      swatches.primary.style.background = h1; swatches.primary.textContent = h1;
-      swatches.secondary.style.background = h2; swatches.secondary.textContent = h2;
-      swatches.accent.style.background = h3; swatches.accent.textContent = h3;
+      generateBtn.style.background = primaryHex;
+      saveBtn.style.background = secondaryHex;
+      exportBtn.style.background = accentHex;
+      previewHeader.style.color = primaryHex;
+      previewCard.style.borderTop = `12px solid ${primaryHex}`;
 
-      generateBtn.style.background = h1;
-      saveBtn.style.background = h2;
-      exportBtn.style.background = h3;
-      mobileFavToggle.style.background = h1;
-      previewHeader.style.color = h1;
-      previewBtn.style.background = h3;
-      previewCard.style.borderTop = `12px solid ${h1}`;
+      uiPrimary.style.background = primaryHex;
+      uiGhost.style.color = primaryHex;
+      uiGhost.onmouseover = () => uiGhost.style.background = `${primaryHex}15`;
+      uiGhost.onmouseout = () => uiGhost.style.background = `transparent`;
 
-      const ratio = checkContrast(h1, bgHex);
+      const ratio = checkContrast(primaryHex, bgHex);
       contrastBadge.textContent = `Contrast Ratio: ${ratio}:1`;
       contrastBadge.style.background = ratio > 4.5 ? '#10b981' : '#f59e0b';
       contrastBadge.style.color = '#fff';
@@ -360,7 +401,6 @@
     function updateFromInputs() {
       const mode = modeSelect.value;
       const [h, s, l] = hexToHsl(baseColorInput.value);
-      
       let palette = { primary: [h, s, l] };
 
       if(mode === 'monochrome') {
@@ -415,19 +455,39 @@
         const del = document.createElement('span');
         del.className = 'delete'; del.innerHTML = '&times;';
         del.onclick = (e) => { e.stopPropagation(); saved.splice(i, 1); localStorage.setItem('styles', JSON.stringify(saved)); renderSaved(); };
-        
-        item.onclick = () => { apply(style); if(window.innerWidth <= 1024) mobileFavToggle.click(); };
-        
+        item.onclick = () => { apply(style); };
         meta.appendChild(del); item.appendChild(pal); item.appendChild(meta);
         favoritesEl.appendChild(item);
       });
     }
+
+    downloadCSSBtn.onclick = () => {
+        const p = current.palette;
+        const h1 = hslToHex(p.primary[0], p.primary[1], p.primary[2]);
+        const h2 = hslToHex(p.secondary[0], p.secondary[1], p.secondary[2]);
+        const h3 = hslToHex(p.accent[0], p.accent[1], p.accent[2]);
+        const cssContent = `:root {\n  --primary: ${h1};\n  --secondary: ${h2};\n  --accent: ${h3};\n  --font: ${fontSelector.value};\n}`.trim();
+        const blob = new Blob([cssContent], { type: 'text/css' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'style.css';
+        a.click();
+    };
+
+    exportBtn.onclick = () => {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(current, null, 2));
+        const a = document.createElement('a');
+        a.href = dataStr;
+        a.download = "config.json";
+        a.click();
+    };
 
     themeToggle.onchange = () => { document.body.classList.toggle('dark-mode'); updateFromInputs(); };
     baseColorInput.oninput = updateFromInputs;
     modeSelect.onchange = updateFromInputs;
     generateBtn.onclick = generateRandomStyle;
     saveBtn.onclick = save;
+    
     renderSaved();
     generateRandomStyle();
   </script>
